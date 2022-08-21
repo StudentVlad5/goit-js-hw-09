@@ -1,32 +1,21 @@
-// Описан в документации
-import flatpickr from "flatpickr";
-// Дополнительный импорт стилей
-import "flatpickr/dist/flatpickr.min.css";
-
-const options = {
-    enableTime: true,
-    minDate: "today",
-    maxDate: new Date().fp_incr(365),
-    time_24hr: true,
-    defaultDate: new Date(),
-    minuteIncrement: 1,
-    onClose(selectedDates) {
-    console.log(selectedDates[0]);
-    },
-  };
-
 const ref = {
+ 
     inputDate: document.querySelector('input'),
     startButton: document.querySelector('[data-start]'),
     containerForTime: document.querySelector('.timer'),
     divField: document.querySelectorAll('.field'),
     spanForTimeNumber: document.querySelectorAll('.value'),
     spanForTimeName: document.querySelectorAll('.label'),
+
     clockDays : document.querySelector('[data-days]'),
     clockHours : document.querySelector('[data-hours]'),
     clockMinutes : document.querySelector('[data-minutes]'),
     clockSeconds : document.querySelector('[data-seconds]'),
+
     currentDate: new Date(),
+    correctMonth: '',
+    correctDay: '',
+    correctYear: '',
     timeNumber: 0,
     sec: 0,
     interval: '',
@@ -46,7 +35,17 @@ ref.spanForTimeNumber.forEach((key)=>{key.style.cssText +=
 ref.spanForTimeName.forEach((key)=>{key.style.cssText += 
     'font-size: 12px; text-transform: uppercase; font-weight: 500;'});
 
-flatpickr('#datetime-picker', options);
+
+if(ref.currentDate.getMonth() < 10) {ref.correctMonth = `0${ref.currentDate.getMonth()+1}`} 
+else {ref.correctMonth = ref.currentDate.getMonth()+1};
+if(ref.currentDate.getDate() < 10) {ref.correctDay = `0${ref.currentDate.getDate()}`}
+else {ref.correctDay = ref.currentDate.getDate()};
+ref.correctYear = ref.currentDate.getFullYear();
+ref.timeNumber = ref.currentDate.getTime();
+
+ref.inputDate.type="date";
+ref.inputDate.value = `${ref.correctYear}-${ref.correctMonth}-${ref.correctDay}`;
+ref.inputDate.min = `${ref.correctYear}-${ref.correctMonth}-${ref.correctDay}`;
 ref.startButton.disabled = true;
 
 ref.inputDate.addEventListener('input',checkDates);
@@ -59,11 +58,10 @@ function checkDates(){
 function pad(value) {
     return String(value).padStart(2,'0')
 }
+ref.startButton.addEventListener('click', startCount)
 
-ref.startButton.addEventListener('click', convertMs)
-
-function convertMs () {
-    ref.sec = (Date.parse(ref.inputDate.value) - Date.parse(new Date()))/1000;
+function startCount () {
+    ref.sec = (Date.parse(ref.inputDate.value) - Date.parse(ref.inputDate.min))/1000;
     ref.startButton.disabled = true;
     interval = setInterval(countSeconds,1000);
 }
