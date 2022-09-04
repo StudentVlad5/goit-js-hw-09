@@ -16,12 +16,14 @@ ref.butnStop.style.cssText +=
   'text-transform: uppercase; height: 25px;'  
 ref.butnStart.style.cssText +=
   'text-transform: uppercase; height: 25px;' 
+ref.butnStop.disabled = true;
 
 ref.butnStart.addEventListener('click', startChangeColor)
 ref.butnStop.addEventListener('click', stopChangeColor)
 
 function startChangeColor () {
     ref.butnStart.disabled = true;
+    ref.butnStop.disabled = false;
     ref.interval = setInterval(getRandomHexColor,1000)}
 
 function getRandomHexColor() {
@@ -32,5 +34,6 @@ function stopChangeColor () {
   if(ref.butnStart.disabled){
     clearInterval(ref.interval);
     ref.butnStart.disabled = false;
+    ref.butnStop.disabled = true;
 }
 }
